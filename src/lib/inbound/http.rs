@@ -17,7 +17,15 @@ pub struct HttpServer {
 
 impl HttpServer {
     pub async fn new(config: HttpServerConfig<'_>) -> Result<Self, anyhow::Error> {
-        let router = axum::Router::new().nest("/api", api_routes());
+        let trace_layer = tower_http::trace::TraceLayer::new_for_http().make_span_with(
+            |request: &axum::extract::Request<_>| {
+                let uri = request.uri().to_string();
+                tracing::info_span!("http_request", method = ?request.method(), uri)
+            },
+        );
+        let router = axum::Router::new()
+            .nest("/api", api_routes())
+            .layer(trace_layer);
         let listener = net::TcpListener::bind(format!("0.0.0.0:{}", config.port))
             .await
             .with_context(|| format!("failed to listen on {}", config.port))?;
