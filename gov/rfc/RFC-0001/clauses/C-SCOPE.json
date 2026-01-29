@@ -1,0 +1,7 @@
+{
+  "clause_id": "C-SCOPE",
+  "title": "Scope",
+  "kind": "normative",
+  "status": "active",
+  "text": "The `crowdsource-rs` system MUST use a hexagonal architecture."
+}

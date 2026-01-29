@@ -1,0 +1,7 @@
+{
+  "clause_id": "C-SUMMARY",
+  "title": "Architectual Overview",
+  "kind": "informative",
+  "status": "active",
+  "text": "This RFC defines that the `crowdsource-rs` system uses a hexagonal architecture."
+}
