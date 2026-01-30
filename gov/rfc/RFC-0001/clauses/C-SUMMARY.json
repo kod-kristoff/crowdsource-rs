@@ -3,5 +3,6 @@
   "title": "Architectual Overview",
   "kind": "informative",
   "status": "active",
-  "text": "This RFC defines that the `crowdsource-rs` system uses a hexagonal architecture."
+  "text": "This RFC defines that the `crowdsource-rs` system uses a hexagonal architecture.",
+  "since": "0.1.0"
 }

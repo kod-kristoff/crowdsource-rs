@@ -2,12 +2,13 @@
   "rfc_id": "RFC-0001",
   "title": "Overall architectual structure",
   "version": "0.1.0",
-  "status": "draft",
+  "status": "normative",
   "phase": "spec",
   "owners": [
     "@kod-kristoff"
   ],
   "created": "2026-01-28",
+  "updated": "2026-01-30",
   "sections": [
     {
       "title": "Summary",
