@@ -17,6 +17,7 @@ doctest = false
 anyhow = "1.0.100"
 axum = "0.8.8"
 email_address = { version = "0.2.9", default-features = false }
+serde = { version = "1.0.228", features = ["derive"] }
 thiserror = "2.0.18"
 tokio = { version = "1.49.0", features = ["rt-multi-thread", "macros", "net"] }
 tower-http = { version = "0.6.8", features = ["trace"] }
