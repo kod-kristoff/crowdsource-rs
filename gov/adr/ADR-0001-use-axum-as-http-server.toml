@@ -1,0 +1,22 @@
+[govctl]
+schema = 1
+id = "ADR-0001"
+title = "Use Axum as HTTP server"
+status = "accepted"
+date = "2026-01-30"
+refs = ["RFC-0001"]
+
+[content]
+context = "We need a HTTP server framework to build our API on."
+decision = "We decided to use `Axum` as incoming http adapter in our hexagonal architecture."
+consequences = """
+Positive: large communitive, lot of control.
+Negative: pretty lowlevel, not best error handling."""
+
+[[content.alternatives]]
+text = "Use Axum as HTTP server framework"
+status = "accepted"
+
+[[content.alternatives]]
+text = "Use Actix-web as HTTP server framework"
+status = "considered"
