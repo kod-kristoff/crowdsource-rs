@@ -61,6 +61,10 @@ impl HttpServer {
             .context("received error from running server")?;
         Ok(())
     }
+
+    pub fn local_addr(&self) -> Result<std::net::SocketAddr, std::io::Error> {
+        self.listener.local_addr()
+    }
 }
 
 fn api_routes<CS: CrowdSrcService>() -> axum::Router<AppState<CS>> {

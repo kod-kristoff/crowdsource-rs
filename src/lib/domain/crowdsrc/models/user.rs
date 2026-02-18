@@ -23,9 +23,13 @@ impl User {
     pub fn username(&self) -> &UserName {
         &self.username
     }
+
+    pub fn email(&self) -> &EmailAddress {
+        &self.email_addr
+    }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 /// A valid email address.
 pub struct EmailAddress(email_address::EmailAddress);
 

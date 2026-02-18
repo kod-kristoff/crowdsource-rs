@@ -10,6 +10,7 @@ impl EmailUserNotifier {
 }
 
 impl UserNotifier for EmailUserNotifier {
+    #[allow(clippy::manual_async_fn)]
     fn user_created(
         &self,
         user: &crate::domain::crowdsrc::models::user::User,

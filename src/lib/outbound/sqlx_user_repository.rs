@@ -10,6 +10,7 @@ impl SqlxUserRepository {
 }
 
 impl UserRepository for SqlxUserRepository {
+    #[allow(clippy::manual_async_fn)]
     fn create_user(
         &self,
         req: &crate::domain::crowdsrc::models::user::CreateUserRequest,
