@@ -1,3 +1,6 @@
+use sqlx::{Connection, PgPool};
+
+use crowdsource::configuration::get_configuration;
 use crowdsource::domain::crowdsrc::service::Service;
 use crowdsource::inbound::http::HttpServer;
 use crowdsource::inbound::http::HttpServerConfig;
@@ -9,7 +12,11 @@ async fn main() -> Result<(), anyhow::Error> {
     // A minimal tracing middleware for request logging.
     tracing_subscriber::fmt::init();
 
-    let user_repo = SqlxUserRepository::new();
+    let config = get_configuration()?;
+
+    let db_pool = PgPool::connect(&config.database.connection_string()).await?;
+
+    let user_repo = SqlxUserRepository::new(db_pool);
     let user_notifier = EmailUserNotifier::new();
     let service = Service::new(user_repo, user_notifier);
     let http_config = HttpServerConfig { port: "3000" };
