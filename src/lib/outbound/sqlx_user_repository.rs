@@ -1,11 +1,15 @@
+use sqlx::PgPool;
+
 use crate::domain::crowdsrc::ports::UserRepository;
 
 #[derive(Debug, Clone)]
-pub struct SqlxUserRepository {}
+pub struct SqlxUserRepository {
+    db_pool: PgPool,
+}
 
 impl SqlxUserRepository {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(db_pool: PgPool) -> Self {
+        Self { db_pool }
     }
 }
 

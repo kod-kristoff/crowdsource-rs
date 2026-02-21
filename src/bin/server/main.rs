@@ -2,7 +2,7 @@ use crowdsource::domain::crowdsrc::service::Service;
 use crowdsource::inbound::http::HttpServer;
 use crowdsource::inbound::http::HttpServerConfig;
 use crowdsource::outbound::email_user_notifier::EmailUserNotifier;
-use crowdsource::outbound::sql_user_repository::SqlxUserRepository;
+use crowdsource::outbound::sqlx_user_repository::SqlxUserRepository;
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
