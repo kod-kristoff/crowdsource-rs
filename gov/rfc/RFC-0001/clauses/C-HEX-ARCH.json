@@ -1,0 +1,8 @@
+{
+  "clause_id": "C-HEX-ARCH",
+  "title": "Hexagonal Architecture",
+  "kind": "normative",
+  "status": "active",
+  "text": "Hexagonal architecture is about build for change.\n\nIn hexagonal architecture, everything is build around the domain(s) of the business logic wrapped in a service. And connected to the service are adapters, incoming (e.g. Http Server) and outgoing (e.g. databases, emails).\n\nThe point is that the domain(s) define interfaces (called `ports`) for adapters. This makes the system more testable, easier maintainable.",
+  "since": "0.1.0"
+}

@@ -1,3 +1,3 @@
 pub async fn api_home() -> String {
-    format!("The crowdsource API")
+    "The crowdsource API".to_string()
 }
