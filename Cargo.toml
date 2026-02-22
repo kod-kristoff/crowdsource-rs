@@ -15,4 +15,5 @@ test = false
 [dependencies]
 anyhow = "1.0.102"
 email_address = "0.2.9"
+thiserror = "2.0.18"
 uuid = { version = "1.21.0", features = ["v4"] }
