@@ -99,6 +99,7 @@ dependencies = [
  "email_address",
  "serde",
  "thiserror",
+ "tokio",
  "uuid",
 ]
 
