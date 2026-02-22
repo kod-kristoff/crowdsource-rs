@@ -17,6 +17,7 @@ anyhow = "1.0.102"
 axum = "0.8.8"
 email_address = "0.2.9"
 serde = { version = "1.0.228", features = ["derive"] }
+sqlx = { version = "0.8.6", default-features = false, features = ["chrono", "macros", "migrate", "postgres", "runtime-tokio-rustls", "uuid"] }
 thiserror = "2.0.18"
 tokio = { version = "1.49.0", features = ["rt-multi-thread", "macros", "net"] }
 tower-http = { version = "0.6.8", features = ["trace"] }
