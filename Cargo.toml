@@ -1,0 +1,15 @@
+[package]
+name = "crowdsource"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+path = "src/lib/lib.rs"
+
+[[bin]]
+name = "crwdsrc-server"
+path = "src/bin/crwdsrc-server/main.rs"
+doctest = false
+test = false
+
+[dependencies]
