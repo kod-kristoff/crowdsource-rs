@@ -16,5 +16,6 @@ test = false
 anyhow = "1.0.102"
 axum = "0.8.8"
 email_address = "0.2.9"
+serde = { version = "1.0.228", features = ["derive"] }
 thiserror = "2.0.18"
 uuid = { version = "1.21.0", features = ["v4"] }
