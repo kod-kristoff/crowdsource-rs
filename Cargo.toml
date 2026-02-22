@@ -13,4 +13,5 @@ doctest = false
 test = false
 
 [dependencies]
+anyhow = "1.0.102"
 uuid = { version = "1.21.0", features = ["v4"] }
