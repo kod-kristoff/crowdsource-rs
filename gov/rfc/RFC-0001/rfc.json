@@ -1,0 +1,39 @@
+{
+  "rfc_id": "RFC-0001",
+  "title": "Overall architectual structure",
+  "version": "0.1.0",
+  "status": "normative",
+  "phase": "impl",
+  "owners": [
+    "@kod-kristoff"
+  ],
+  "created": "2026-01-28",
+  "updated": "2026-01-30",
+  "sections": [
+    {
+      "title": "Summary",
+      "clauses": [
+        "clauses/C-SUMMARY.json"
+      ]
+    },
+    {
+      "title": "Specification",
+      "clauses": [
+        "clauses/C-HEX-ARCH.json"
+      ]
+    },
+    {
+      "title": "Scope",
+      "clauses": [
+        "clauses/C-SCOPE.json"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "date": "2026-01-28",
+      "notes": "Initial draft"
+    }
+  ]
+}

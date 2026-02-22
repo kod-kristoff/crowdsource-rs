@@ -1,0 +1,22 @@
+[govctl]
+schema = 1
+id = "WI-2026-01-30-85d2"
+title = "Implement the User API"
+status = "active"
+created = "2026-01-30"
+started = "2026-01-30"
+refs = ["ADR-0001"]
+
+[content]
+description = """
+Implement the User API using a hexagonal architecture and axum."""
+
+[[content.acceptance_criteria]]
+text = "Tests pass"
+status = "pending"
+category = "fixed"
+
+[[content.acceptance_criteria]]
+text = "Documentation updated"
+status = "pending"
+category = "added"
