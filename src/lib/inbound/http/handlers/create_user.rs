@@ -76,6 +76,7 @@ mod tests {
     use std::sync::Arc;
 
     use anyhow::anyhow;
+    use chrono::Utc;
     use uuid::Uuid;
 
     use crate::domain::crowdsrc::models::user::CreateUserError;
@@ -178,11 +179,13 @@ mod tests {
         let user_name = UserName::new("Kristoffer").unwrap();
         let user_email = EmailAddress::new("kristoffer@example.com").unwrap();
         let user_id = Uuid::new_v4();
+        let created_at = Utc::now();
         let service = MockCrowdSrcService {
             create_user_result: Arc::new(std::sync::Mutex::new(Ok(User::new(
                 user_id,
                 user_name.clone(),
                 user_email.clone(),
+                created_at,
             )))),
         };
 

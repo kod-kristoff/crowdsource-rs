@@ -22,8 +22,9 @@ env:
   APP_USER: app
   APP_USER_PWD: secret
   APP_DB_NAME: crowdsource
+
 jobs:
-    coverage:
+  coverage:
     # use llvm-cov to build and collect coverage and outputs in a format that
     # is compatible with codecov.io
     #
