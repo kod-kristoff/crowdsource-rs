@@ -1,18 +1,27 @@
 use std::{fmt, str::FromStr};
 
+use chrono::{DateTime, Utc};
+
 #[derive(Debug, Clone)]
 pub struct User {
     id: uuid::Uuid,
     username: UserName,
     email_addr: EmailAddress,
+    created_at: DateTime<Utc>,
 }
 
 impl User {
-    pub fn new(id: uuid::Uuid, username: UserName, email_addr: EmailAddress) -> Self {
+    pub fn new(
+        id: uuid::Uuid,
+        username: UserName,
+        email_addr: EmailAddress,
+        created_at: DateTime<Utc>,
+    ) -> Self {
         Self {
             id,
             username,
             email_addr,
+            created_at,
         }
     }
 
@@ -96,17 +105,17 @@ impl fmt::Display for UserName {
 /// The fields required by the domain to create an [User].
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct CreateUserRequest {
-    name: UserName,
+    username: UserName,
     email: EmailAddress,
 }
 
 impl CreateUserRequest {
-    pub fn new(name: UserName, email: EmailAddress) -> Self {
-        Self { name, email }
+    pub fn new(username: UserName, email: EmailAddress) -> Self {
+        Self { username, email }
     }
 
-    pub fn name(&self) -> &UserName {
-        &self.name
+    pub fn username(&self) -> &UserName {
+        &self.username
     }
 
     pub fn email(&self) -> &EmailAddress {
