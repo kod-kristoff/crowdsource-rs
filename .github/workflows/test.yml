@@ -1,0 +1,127 @@
+# This is the main CI workflow that runs the test suite on all pushes to main and all pull requests.
+# It runs the following jobs:
+# - required: runs the test suite on ubuntu with stable and beta rust toolchains
+# - minimal: runs the test suite with the minimal versions of the dependencies that satisfy the
+#   requirements of this crate, and its dependencies
+# - os-check: runs the test suite on mac and windows
+# - coverage: runs the test suite and collects coverage information
+# See check.yml for information about how the concurrency cancellation and workflow triggering works
+permissions:
+  contents: read
+on:
+  push:
+    branches: [main]
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+name: test
+env:
+  SQLX_VERSION: 0.8.6
+  SQLX_FEATURES: "rustls,postgres"
+  APP_USER: app
+  APP_USER_PWD: secret
+  APP_DB_NAME: crowdsource
+jobs:
+    coverage:
+    # use llvm-cov to build and collect coverage and outputs in a format that
+    # is compatible with codecov.io
+    #
+    # note that codecov as of v5 requires that CODECOV_TOKEN from
+    #
+    #   https://app.codecov.io/gh/<user or org>/<project>/settings
+    #
+    # is set in two places on your repo:
+    #
+    # - https://github.com/jonhoo/guardian/settings/secrets/actions
+    # - https://github.com/jonhoo/guardian/settings/secrets/dependabot
+    #
+    # (the former is needed for codecov uploads to work with Dependabot PRs)
+    #
+    # PRs coming from forks of your repo will not have access to the token, but
+    # for those, codecov allows uploading coverage reports without a token.
+    # it's all a little weird and inconvenient. see
+    #
+    #   https://github.com/codecov/feedback/issues/112
+    #
+    # for lots of more discussion
+    runs-on: ubuntu-latest
+    name: ubuntu / stable / coverage
+    # Service containers to run alongside the `test` container job
+    services:
+      postgres:
+        # Docker Hub image
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 25432:5432
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          submodules: true
+          persist-credentials: false
+      - name: Install stable
+        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9 # master
+        with:
+          toolchain: stable
+          components: llvm-tools-preview
+      - name: cargo install cargo-llvm-cov
+        uses: taiki-e/install-action@0005e0116e92d8489d8d96fbff83f061c79ba95a # v2.62.31
+        with:
+          tool: cargo-llvm-cov
+      - name: cargo generate-lockfile
+        if: hashFiles('Cargo.lock') == ''
+        run: cargo generate-lockfile
+      - name: Install sqlx-cli
+        run:
+          cargo install sqlx-cli
+          --version=${{ env.SQLX_VERSION }}
+          --features ${{ env.SQLX_FEATURES }}
+          --no-default-features
+          --locked
+          # The --locked flag can be used to force Cargo to use the packaged Cargo.lock file if it is available.
+          # This may be useful for ensuring reproducible builds, to use the exact same set of dependencies that were available when the package was published.
+          # It may also be useful if a newer version of a dependency is published that no longer builds on your system, or has other problems
+
+      - name: Create app user in Postgres
+        run: |
+          sudo apt-get install postgresql-client
+
+          # Create the application user
+          CREATE_QUERY="CREATE USER ${APP_USER} WITH PASSWORD '${APP_USER_PWD}';"
+          PGPASSWORD="password" psql -U "postgres" -h "localhost" -p 25432 -c "${CREATE_QUERY}"
+
+          # Grant create db privileges to the app user
+          GRANT_QUERY="ALTER USER ${APP_USER} CREATEDB;"
+          PGPASSWORD="password" psql -U "postgres" -h "localhost" -p 25432 -c "${GRANT_QUERY}"
+
+      - name: Migrate database
+        run: |
+          SKIP_DOCKER=true ./scripts/init_db.sh
+
+      - name: cargo llvm-cov
+        run: cargo llvm-cov --locked --all-features --lcov --output-path lcov.info
+      - name: Record Rust version
+        run: echo "RUST=$(rustc --version)" >> "$GITHUB_ENV"
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,RUST
+
+  # https://github.com/marketplace/actions/alls-green#why used for branch protection checks
+  test-check:
+    if: always()
+    needs:
+      - coverage
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}
