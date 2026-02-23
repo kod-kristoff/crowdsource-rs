@@ -1,4 +1,5 @@
 use axum::{Json, extract::State, http::StatusCode};
+use axum_extra::extract::WithRejection;
 
 use crate::{
     domain::crowdsrc::{
@@ -21,7 +22,7 @@ use crate::{
 /// - 422 Unprocessable entity: An [User] with the same name already exists.
 pub async fn create_user<CS: CrowdSrcService>(
     State(state): State<AppState<CS>>,
-    Json(body): Json<CreateUserHttpRequestBody>,
+    WithRejection(Json(body), _): WithRejection<Json<CreateUserHttpRequestBody>, ApiError>,
 ) -> Result<ApiSuccess<CreateUserResponseData>, ApiError> {
     let domain_req = body.try_into_domain()?;
     state
@@ -72,10 +73,12 @@ impl From<&User> for CreateUserResponseData {
 
 #[cfg(test)]
 mod tests {
+    use std::marker::PhantomData;
     use std::mem;
     use std::sync::Arc;
 
     use anyhow::anyhow;
+    use chrono::Utc;
     use uuid::Uuid;
 
     use crate::domain::crowdsrc::models::user::CreateUserError;
@@ -107,10 +110,13 @@ mod tests {
         let state = axum::extract::State(AppState {
             crwdsrc_service: Arc::new(service),
         });
-        let body = axum::extract::Json(CreateUserHttpRequestBody {
-            username: user_name.to_string(),
-            email_address: user_email.to_string(),
-        });
+        let body = WithRejection(
+            axum::extract::Json(CreateUserHttpRequestBody {
+                username: user_name.to_string(),
+                email_address: user_email.to_string(),
+            }),
+            PhantomData,
+        );
         create_user(state, body).await
     }
     #[tokio::test(flavor = "multi_thread")]
@@ -163,8 +169,9 @@ mod tests {
             actual
         );
 
-        let expected_err =
-            ApiError::UnprocessableEntity(format!("user with username {user_name} already exists"));
+        let expected_err = ApiError::UnprocessableEntity(format!(
+            "user with username '{user_name}' already exists"
+        ));
         let actual_err = actual.unwrap_err();
         assert_eq!(
             actual_err, expected_err,
@@ -178,11 +185,13 @@ mod tests {
         let user_name = UserName::new("Kristoffer").unwrap();
         let user_email = EmailAddress::new("kristoffer@example.com").unwrap();
         let user_id = Uuid::new_v4();
+        let created_at = Utc::now();
         let service = MockCrowdSrcService {
             create_user_result: Arc::new(std::sync::Mutex::new(Ok(User::new(
                 user_id,
                 user_name.clone(),
                 user_email.clone(),
+                created_at,
             )))),
         };
 

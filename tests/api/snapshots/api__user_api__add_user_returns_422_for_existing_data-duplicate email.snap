@@ -1,0 +1,10 @@
+---
+source: tests/api/user_api.rs
+expression: actual_msg
+---
+{
+  "data": {
+    "message": "user with email 'user@example.com' already exists"
+  },
+  "status_code": 422
+}
