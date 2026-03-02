@@ -22,8 +22,9 @@ env:
   APP_USER: app
   APP_USER_PWD: secret
   APP_DB_NAME: crowdsource
+
 jobs:
-    coverage:
+  coverage:
     # use llvm-cov to build and collect coverage and outputs in a format that
     # is compatible with codecov.io
     #
@@ -101,6 +102,9 @@ jobs:
       - name: Migrate database
         run: |
           SKIP_DOCKER=true ./scripts/init_db.sh
+
+      - name: Check that queries are fresh
+        run: cargo sqlx prepare --workspace --check -- --all-targets
 
       - name: cargo llvm-cov
         run: cargo llvm-cov --locked --all-features --lcov --output-path lcov.info

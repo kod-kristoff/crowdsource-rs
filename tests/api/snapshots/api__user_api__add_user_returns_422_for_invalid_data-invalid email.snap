@@ -1,0 +1,10 @@
+---
+source: tests/api/user_api.rs
+expression: actual_msg
+---
+{
+  "data": {
+    "message": "email address 'user-example.com' is invalid"
+  },
+  "status_code": 422
+}

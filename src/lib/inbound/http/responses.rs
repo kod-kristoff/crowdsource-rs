@@ -45,12 +45,19 @@ impl From<anyhow::Error> for ApiError {
     }
 }
 
+impl From<axum::extract::rejection::JsonRejection> for ApiError {
+    fn from(value: axum::extract::rejection::JsonRejection) -> Self {
+        ApiError::UnprocessableEntity(value.body_text())
+    }
+}
+
 impl From<CreateUserError> for ApiError {
     fn from(e: CreateUserError) -> Self {
         match e {
-            CreateUserError::DuplicateUserName { username } => {
-                Self::UnprocessableEntity(format!("user with username {} already exists", username))
-            }
+            CreateUserError::DuplicateUserName { username } => Self::UnprocessableEntity(format!(
+                "user with username '{}' already exists",
+                username
+            )),
             CreateUserError::DuplicateEmail { email } => {
                 Self::UnprocessableEntity(format!("user with email '{}' already exists", email))
             }
@@ -70,9 +77,12 @@ impl From<ParseCreateUserHttpRequestError> for ApiError {
             }
             ParseCreateUserHttpRequestError::Name(UserNameError::WithWhitespace {
                 invalid_username,
-            }) => format!("username '{}' is not valid", invalid_username),
+            }) => format!(
+                "username cannot contain whitespace (got: '{}')",
+                invalid_username
+            ),
             ParseCreateUserHttpRequestError::EmailAddress(cause) => {
-                format!("email address {} is invalid", cause.invalid_email)
+                format!("email address '{}' is invalid", cause.invalid_email)
             }
         };
 
