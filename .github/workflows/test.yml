@@ -103,6 +103,9 @@ jobs:
         run: |
           SKIP_DOCKER=true ./scripts/init_db.sh
 
+      - name: Check that queries are fresh
+        run: cargo sqlx prepare --workspace --check -- --all-targets
+
       - name: cargo llvm-cov
         run: cargo llvm-cov --locked --all-features --lcov --output-path lcov.info
       - name: Record Rust version
