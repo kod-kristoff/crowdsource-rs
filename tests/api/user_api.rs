@@ -75,6 +75,31 @@ async fn add_user_returns_422_for_invalid_data() {
         );
     }
 }
+
+#[tokio::test]
+async fn add_user_fails_with_500_if_there_is_a_fatal_database_error() {
+    // Arrange
+    let app = spawn_app().await;
+    let body = r#"{
+        "email_address":"user@example.com",
+        "username":"user"
+    }"#;
+    // Sabotage the database
+    sqlx::query!("ALTER TABLE users DROP COLUMN email;")
+        .execute(&app.db_pool)
+        .await
+        .unwrap();
+
+    // Act
+    let response = app.post_users(body.into()).await;
+
+    // Assert
+    assert_eq!(response.status().as_u16(), 500);
+    let actual_msg: serde_json::Value = response.json().await.unwrap();
+
+    insta::assert_json_snapshot!(actual_msg);
+}
+
 #[tokio::test]
 async fn add_user_returns_422_for_existing_data() {
     // Arrange

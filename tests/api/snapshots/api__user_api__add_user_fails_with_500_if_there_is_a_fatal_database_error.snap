@@ -1,0 +1,10 @@
+---
+source: tests/api/user_api.rs
+expression: actual_msg
+---
+{
+  "data": {
+    "message": "Internal server error"
+  },
+  "status_code": 500
+}
