@@ -1,0 +1,10 @@
+---
+source: tests/api/user_api.rs
+expression: actual_msg
+---
+{
+  "data": {
+    "message": "username cannot contain whitespace (got: 'with whitespace')"
+  },
+  "status_code": 422
+}

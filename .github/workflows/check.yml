@@ -48,6 +48,8 @@ jobs:
       matrix:
         # Get early warning of new lints which are regularly introduced in beta channels.
         toolchain: [stable, beta]
+    env:
+      SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -68,6 +70,8 @@ jobs:
     # API be documented as only available in some specific platforms.
     runs-on: ubuntu-latest
     name: nightly / doc
+    env:
+      SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -86,6 +90,8 @@ jobs:
     # which is required for feature unification
     runs-on: ubuntu-latest
     name: ubuntu / stable / features
+    env:
+      SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -110,8 +116,10 @@ jobs:
     # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
     strategy:
       matrix:
-        msrv: ["1.85.1"] # 2021 edition requires 1.56
+        msrv: ["1.88"] # 2021 edition requires 1.56
     name: ubuntu / ${{ matrix.msrv }}
+    env:
+      SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:

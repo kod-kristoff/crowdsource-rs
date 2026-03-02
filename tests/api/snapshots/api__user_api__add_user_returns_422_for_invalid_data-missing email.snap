@@ -1,0 +1,10 @@
+---
+source: tests/api/user_api.rs
+expression: actual_msg
+---
+{
+  "data": {
+    "message": "Failed to deserialize the JSON body into the target type: missing field `email_address` at line 1 column 19"
+  },
+  "status_code": 422
+}
